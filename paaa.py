@@ -73,7 +73,7 @@ dictionary = dict(zip(formatted_periods, defined_periods))
 
 # ________________________________________________________________________________________________________________
 
-print(df)
+# print(df)
 
 # ________________________________________________________________________________________________________________
 
@@ -121,6 +121,55 @@ def sheetPicker():
     for index, row in tableDataFrame.iterrows():
         tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT']])
 
+# FUNCTION TO ADD NEW TRANSACTIONS INTO THE TABLE AND DATABASE
+
+
+def rowPicker():
+    # THE LABEL FOR "LAST TRANSACTION ADDED"
+    titleMyLabel = Label(guiWindow, text="LAST TRANSACTION ADDED: ").place(
+        x=705, y=50, width=200, height=20)
+    # FORMATTED STRINGS FOR INPUTTING THE MOST RECENT TRANSACTIONS
+    transactionsMyLabel = Label(guiWindow, text=f"""DATE: {date_entry_variable.get()},
+    DEBIT: {debit_entry_variable.get()},
+    CREDIT: {credit_entry_variable.get()}""").place(x=705, y=65, width=200, height=90)
+    # DELETING OLD ENTRIES FROM THE TABLE
+    for i in tv.get_children():
+        tv.delete(i)
+    # READING THE DATABASE FOR THE NEW ENTRIES
+    dfRow = pd.read_excel(
+        '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx').fillna(0)
+    # SETTING UP THE NEW DATAFRAM COLUMNS
+    dfRow['DATE'] = pd.to_datetime(dfRow['DATE']).apply(lambda x: x.date())
+    dfRow['DEBIT'] = dfRow['DEBIT'].round(decimals=2)
+    dfRow['CREDIT'] = dfRow['CREDIT'].round(decimals=2)
+    # SETTING THE PARAMETERS
+    txnDates = dfRow['DATE']
+    txnDebits = dfRow['DEBIT']
+    txnCredits = dfRow['CREDIT']
+    desiredDate = pd.to_datetime(date_entry_variable.get())
+    # TURNING DATAFRAME TO DICTIONARY, SO TXN VALUES CAN BE EDITED FROM RECORDS
+    dataDict = dfRow.to_dict('dict')
+    for index, date in txnDates.items():
+        # IF 'DATAFRAME DATE' == 'INPUTTED DATE' THEN:
+        if date == desiredDate:
+            # ADDS THE INPUTTED 'DEBIT' NUMBER TO THE RECORDED 'DEBIT' NUMBER IN DATABASE
+            newDebitAmount = txnDebits[index] + \
+                float(debit_entry_variable.get())
+            # ASSIGN THE NEW NUMBER FOR THE SPECIFIC INDEX, OF THE 'DEBIT' COLUMN
+            dataDict['DEBIT'][index] = newDebitAmount
+            # ADDS THE INPUTTED 'CREDIT' NUMBER TO THE RECORDED 'CREDIT' NUMBER IN DATABASE
+            newCreditAmount = txnCredits[index] + \
+                float(credit_entry_variable.get())
+            # ASSIGN THE NEW NUMBER FOR THE SPECIFIC INDEX, OF THE 'CREDIT' COLUMN
+            dataDict['CREDIT'][index] = newCreditAmount
+            # TURNING THE DICTIONARY BACK INTO A DATAFRAME, AS NEW TXN VALUES NEED TO BE CEMENTED IN
+            dfRow = dfRow.from_dict(dataDict)
+
+        else:
+            pass
+
+        print(dfRow)
+
 
 # THE SELECTED OPTION, FROM THE DROPDOWN-MENU, GETS SET AS A STRING VARIABLE.
 clicked = StringVar()
@@ -133,6 +182,33 @@ dropDownMenu.place(x=60, y=15, width=200, height=30)
 # CREATING THE DROPDOWN BUTTON
 dropDownButton = Button(guiWindow, text="UPDATE TABLE...",
                         command=sheetPicker).place(x=280, y=15, width=200, height=30)
+
+
+# THE "DATE" TITLE
+Label(guiWindow, text="DATE").place(x=480, y=15, width=100, height=38)
+# THE "DATE" INPUT FIELD
+date_entry_variable = StringVar()
+date_entry = tk.Entry(guiWindow, textvariable=date_entry_variable, width=10)
+date_entry_variable.set("2019-01-08")
+date_entry.place(x=565, y=15, width=100, height=30)
+# THE "DEBIT" TITLE
+Label(guiWindow, text="DEBIT").place(x=480, y=45, width=100, height=38)
+# THE "DEBIT" INPUT FIELD
+debit_entry_variable = StringVar()
+debit_entry = tk.Entry(guiWindow, textvariable=debit_entry_variable, width=10)
+debit_entry_variable.set("-9.99")
+debit_entry.place(x=565, y=45, width=100, height=30)
+# THE "CREDIT" TITLE
+Label(guiWindow, text="CREDIT").place(x=480, y=75, width=100, height=38)
+# THE "CREDIT" INPUT FIELD
+credit_entry_variable = StringVar()
+credit_entry = tk.Entry(
+    guiWindow, textvariable=credit_entry_variable, width=10)
+credit_entry_variable.set("20.00")
+credit_entry.place(x=565, y=75, width=100, height=30)
+# "ADD TRANSACTION" BUTTON
+add_transaction_button = Button(guiWindow, text="ADD TRANSACTION...", command=rowPicker).place(
+    x=685, y=15, width=238, height=30)
 
 
 # WIDGET USED TO DISPLAY ITEMS WITH A HIERACHY
@@ -163,3 +239,11 @@ for index, row in df.iterrows():
 guiWindow.mainloop()
 
 # ________________________________________________________________________________________________________________
+
+# print(defined_periods)
+
+# [datetime.date(2019, 1, 8), datetime.date(2019, 2, 7)]
+# print(defined_periods[0])
+
+# [datetime.date(2019, 1, 8)
+# print(defined_periods[0][0])
