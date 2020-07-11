@@ -146,7 +146,7 @@ def rowPicker():
     txnDates = dfRow['DATE']
     txnDebits = dfRow['DEBIT']
     txnCredits = dfRow['CREDIT']
-    desiredDate = pd.to_datetime(date_entry_variable.get())
+    desiredDate = datetime.datetime.strptime(date_entry_variable.get(), "%Y-%m-%d").date()
     # TURNING DATAFRAME TO DICTIONARY, SO TXN VALUES CAN BE EDITED FROM RECORDS
     dataDict = dfRow.to_dict('dict')
     for index, date in txnDates.items():
