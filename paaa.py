@@ -259,6 +259,14 @@ def rowPicker():
     txnDebits = dfRow['DEBIT']
     txnCredits = dfRow['CREDIT']
     desiredDate = datetime.datetime.strptime(date_entry_variable.get(), "%Y-%m-%d").date()
+    # EXTRACTING THE CORRESPONDING "PERIOD"
+    for index, date in txnDates.items():
+        if date == desiredDate:
+            periodMask = dfRow['PERIOD'][index]
+            print(dfRow['PERIOD'][index])
+        else:
+            pass
+        
     # TURNING DATAFRAME TO DICTIONARY, SO TXN VALUES CAN BE EDITED FROM RECORDS
     dataDict = dfRow.to_dict('dict')
     for index, date in txnDates.items():
