@@ -284,6 +284,9 @@ def rowPicker():
             dataDict['CREDIT'][index] = newCreditAmount
             # TURNING THE DICTIONARY BACK INTO A DATAFRAME, AS NEW TXN VALUES NEED TO BE CEMENTED IN
             dfRow = dfRow.from_dict(dataDict)
+            # FILTERING THE DATAFRAME BASED ON THE 'PERIOD' OF THE INPUTTED DATE
+            filterMask = (dfRow['PERIOD'] == periodMask)
+            dfRow = dfRow[filterMask]
 
         else:
             pass
