@@ -291,7 +291,20 @@ def rowPicker():
         else:
             pass
         
-        
+    # FOR LOADING THE FILE INTO "book"
+    book = load_workbook(
+        '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx')
+    # CREATES A PANDAS EXCEL WRITER BY USING AN "opnpyxl" ENGINE ONTO THE "INITIAL DATABASE"
+    writer = pd.ExcelWriter(
+        '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx', engine='openpyxl')
+    # SETTING THE "writer.book" VALUE TO BE "book"
+    writer.book = book
+    # CREATES A DICTIONARY OF KEY/VALUE PAIRS - {'sheet_titles' : sheet}
+    writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
+    # CONVERTS THE "DATAFRAME" OBJECT INTO AN "XLSX WRITER" OBJECT
+    dfRow.to_excel(writer, sheet_name='Sheet1', index=False)
+    # CLOSING THE PANDAS "XLSX WRITER" AND OUTPUTTING THE EXCEL FILE
+    writer.save()    
     # INSERT THE NEWLY UPDATED DATAFRAME VALUES INTO THE TKK.TREEVIEW WIDGET
     print(dfRow)
     for index, row in dfRow.iterrows():
