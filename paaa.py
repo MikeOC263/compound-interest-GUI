@@ -265,13 +265,7 @@ def rowPicker():
             periodMask = dfRow['PERIOD'][index]
             print(dfRow['PERIOD'][index])
         else:
-            pass
-    # INSERT THE NEWLY UPDATED DATAFRAME VALUES INTO THE TKK.TREEVIEW WIDGET
-    print(dfRow)
-    for index, row in dfRow.iterrows():
-        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT']])
-        
-        
+            pass      
         
     # TURNING DATAFRAME TO DICTIONARY, SO TXN VALUES CAN BE EDITED FROM RECORDS
     dataDict = dfRow.to_dict('dict')
@@ -296,8 +290,13 @@ def rowPicker():
 
         else:
             pass
-
-        print(dfRow)
+        
+        
+    # INSERT THE NEWLY UPDATED DATAFRAME VALUES INTO THE TKK.TREEVIEW WIDGET
+    print(dfRow)
+    for index, row in dfRow.iterrows():
+        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT']])
+        
 
 
 # THE SELECTED OPTION, FROM THE DROPDOWN-MENU, GETS SET AS A STRING VARIABLE.
