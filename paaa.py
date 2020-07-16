@@ -122,9 +122,10 @@ def sheetPicker():
         tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT']])
 
 # FUNCTION TO ADD NEW TRANSACTIONS INTO THE TABLE AND DATABASE
-
-
 def rowPicker():
+    # DELETING OLD ENTRIES FROM THE TABLE
+    for i in tv.get_children():
+        tv.delete(i)
     # THE LABEL FOR "LAST TRANSACTION ADDED"
     titleMyLabel = Label(guiWindow, text="LAST TRANSACTION ADDED: ").place(
         x=705, y=50, width=200, height=20)
@@ -132,9 +133,6 @@ def rowPicker():
     transactionsMyLabel = Label(guiWindow, text=f"""DATE: {date_entry_variable.get()},
     DEBIT: {debit_entry_variable.get()},
     CREDIT: {credit_entry_variable.get()}""").place(x=705, y=65, width=200, height=90)
-    # DELETING OLD ENTRIES FROM THE TABLE
-    for i in tv.get_children():
-        tv.delete(i)
     # READING THE DATABASE FOR THE NEW ENTRIES
     dfRow = pd.read_excel(
         '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx').fillna(0)
