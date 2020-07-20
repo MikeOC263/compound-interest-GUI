@@ -300,6 +300,11 @@ def rowPicker():
             periodNo = value
         else:
             pass
+    for key, value in periodDict.items():
+        if value > periodNo:
+            firstPeriods.append(key)
+        else:
+            pass
     
     # EXTRACTING THE CORRESPONDING "PERIOD"
     for index, date in txnDates.items():
