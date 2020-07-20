@@ -287,7 +287,10 @@ def rowPicker():
     txnDates = dfRow['DATE']
     txnDebits = dfRow['DEBIT']
     txnCredits = dfRow['CREDIT']
+    txnPeriod = dfRow['PERIOD']
     desiredDate = datetime.datetime.strptime(date_entry_variable.get(), "%Y-%m-%d").date()
+    
+    
     # EXTRACTING THE CORRESPONDING "PERIOD"
     for index, date in txnDates.items():
         if date == desiredDate:
