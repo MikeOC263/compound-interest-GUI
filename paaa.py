@@ -279,6 +279,10 @@ def rowPicker():
     # STORING 'formatted_periods' WITH 'indexes' INTO A DICTIONARY (periodDict)
     periodDict = dict(zip(formatted_periods, idx_formatted_periods))
     
+    # CREATING A DICTIONARY FOR NEWLY ADDED TRANSACTION (including all relevant details)
+    txnDict = dict(date=dateEntry, debit=debit_entry_variable.get(),
+                   credit=credit_entry_variable.get(), period=periodEntry)
+    
     # SETTING THE PARAMETERS
     txnDates = dfRow['DATE']
     txnDebits = dfRow['DEBIT']
