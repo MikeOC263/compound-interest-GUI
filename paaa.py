@@ -305,6 +305,17 @@ def rowPicker():
             firstPeriods.append(key)
         else:
             pass
+        
+    # ALL OF THE DATES WHICH NEED TO INCLUDE THE NEWLY ADDED TXN WITHIN THEIR 'DEBIT' & 'CREDIT' (more so the Debit)
+    # DATES ARE IN 'datetime.date' FORMAT
+    for period in firstPeriods:
+        periodDates = enumerate(dfRow.loc[dfRow['PERIOD'] == period, 'DATE'])
+        for index, date in periodDates:
+            if index == 0:
+                print("\n", "period:__ ", f"{period}", "type(date):__ ", type(
+                    date), "date:__ ", date)
+                pass
+    
     
     # EXTRACTING THE CORRESPONDING "PERIOD"
     for index, date in txnDates.items():
