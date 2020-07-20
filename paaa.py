@@ -268,6 +268,9 @@ def rowPicker():
     dateEntry = datetime.datetime.strptime(
         date_entry_variable.get(), "%Y-%m-%d").date()
     
+    # THE CURRENT CORRESPONDNING PERIOD - FOR THE NEWLY ADDED TRANSACTION
+    periodEntry = dfRow.loc[dfRow['DATE'] == dateEntry, 'PERIOD'].values[0]
+    
     # SETTING THE PARAMETERS
     txnDates = dfRow['DATE']
     txnDebits = dfRow['DEBIT']
