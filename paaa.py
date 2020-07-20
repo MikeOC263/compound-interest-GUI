@@ -262,6 +262,12 @@ def rowPicker():
         else:
             periods.append(period17)
     dfRow['PERIOD'] = periods
+    
+    # CHANGE "date_entry_variable.get()" FROM A 'STRING' -> 'DATETIME.DATE' CLASS
+    # FOR THE PURPOSE OF GETTING THE CORRESPONDING PERIOD - TO THE INPUTTED DATE
+    dateEntry = datetime.datetime.strptime(
+        date_entry_variable.get(), "%Y-%m-%d").date()
+    
     # SETTING THE PARAMETERS
     txnDates = dfRow['DATE']
     txnDebits = dfRow['DEBIT']
