@@ -66,7 +66,15 @@ for index, date in period_dates:
         whole_period = whole_period.upper()
         formatted_periods.append(whole_period)
     else:
-        pass
+        # ALLOWING US TO PRODUCE THE LAST "formatted_period" -- "2020 | 08JUN - 07 JUL"
+        start_period = sorted_start_dates[index]
+        end_period = sorted_start_dates[index] + timedelta(days=29)
+        defined_periods.append([start_period, end_period])
+        whole_period = start_period.strftime(
+            '%Y') + " " + "|" + " " + start_period.strftime('%d%b') + " - " + end_period.strftime('%d%b')
+        whole_period = whole_period.upper()
+        formatted_periods.append(whole_period)
+        
 
 dictionary = dict(zip(formatted_periods, defined_periods))
 
