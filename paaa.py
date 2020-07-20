@@ -275,6 +275,9 @@ def rowPicker():
     idx_formatted_periods = []
     for i in range(len(formatted_periods)):
         idx_formatted_periods.append(i)
+        
+    # STORING 'formatted_periods' WITH 'indexes' INTO A DICTIONARY (periodDict)
+    periodDict = dict(zip(formatted_periods, idx_formatted_periods))
     
     # SETTING THE PARAMETERS
     txnDates = dfRow['DATE']
