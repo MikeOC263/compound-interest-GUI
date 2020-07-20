@@ -255,10 +255,12 @@ def rowPicker():
             periods.append(period15)
         elif (row >= start16) & (row <= end16):
             periods.append(period16)
-        elif (row >= start17) & (row <= end17):
-            periods.append(period17)
-        else:
+            # FILLING IN THE LAST PERIOD (HACKY ALTERNATIVE)
+        elif (row >= start18) & (row <= end18):
             periods.append(period18)
+            # FILLING IN THE SECOND TO LAST PERIOD - NOW THAT ALL OTHER PERIODS HAVE BEEN FILLED (HACKY ALTERNATIVE)
+        else:
+            periods.append(period17)
     dfRow['PERIOD'] = periods
     # SETTING THE PARAMETERS
     txnDates = dfRow['DATE']
