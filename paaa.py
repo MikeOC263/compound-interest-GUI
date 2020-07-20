@@ -290,6 +290,16 @@ def rowPicker():
     txnPeriod = dfRow['PERIOD']
     desiredDate = datetime.datetime.strptime(date_entry_variable.get(), "%Y-%m-%d").date()
     
+    # STORE THE INDEX, RELATING TO THE 'PERIOD' FOR THE NEWLY ADDED TRANSACTION
+    # FOR THE FINAL PURPOSE OF INCLUDING THIS TRANSACTION TO ALL 'higher' PERIODS (for the beggining date in that period)
+    # (Key= formatted_period), (Value= idx_formatted_period)
+    firstPeriods = []
+    for key, value in periodDict.items():
+        firstPeriods = []
+        if key == periodEntry:
+            periodNo = value
+        else:
+            pass
     
     # EXTRACTING THE CORRESPONDING "PERIOD"
     for index, date in txnDates.items():
