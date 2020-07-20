@@ -271,6 +271,11 @@ def rowPicker():
     # THE CURRENT CORRESPONDNING PERIOD - FOR THE NEWLY ADDED TRANSACTION
     periodEntry = dfRow.loc[dfRow['DATE'] == dateEntry, 'PERIOD'].values[0]
     
+    # CREATING INDEXES FOR EACH "formatted_period", TO BE USED LATER ON FOR COMPARISONS
+    idx_formatted_periods = []
+    for i in range(len(formatted_periods)):
+        idx_formatted_periods.append(i)
+    
     # SETTING THE PARAMETERS
     txnDates = dfRow['DATE']
     txnDebits = dfRow['DEBIT']
