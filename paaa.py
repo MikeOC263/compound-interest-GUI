@@ -342,10 +342,7 @@ def rowPicker():
             dataDict['CREDIT'][index] = newCreditAmount
             # TURNING THE DICTIONARY BACK INTO A DATAFRAME, AS NEW TXN VALUES NEED TO BE CEMENTED IN
             dfRow = dfRow.from_dict(dataDict)
-            # FILTERING THE DATAFRAME BASED ON THE 'PERIOD' OF THE INPUTTED DATE
-            filterMask = (dfRow['PERIOD'] == periodMask)
-            dfRow = dfRow[filterMask]
-
+            
         else:
             pass
         
@@ -363,6 +360,10 @@ def rowPicker():
     dfRow.to_excel(writer, sheet_name='Sheet1', index=False)
     # CLOSING THE PANDAS "XLSX WRITER" AND OUTPUTTING THE EXCEL FILE
     writer.save()    
+    
+    # (been mov'd from lne 346 -347) FILTERING THE DATAFRAME BASED ON THE 'PERIOD' OF THE INPUTTED DATE
+    filterMask = (dfRow['PERIOD'] == periodMask)
+    dfRow = dfRow[filterMask]
     # INSERT THE NEWLY UPDATED DATAFRAME VALUES INTO THE TKK.TREEVIEW WIDGET
     print(dfRow)
     for index, row in dfRow.iterrows():
