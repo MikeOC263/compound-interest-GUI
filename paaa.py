@@ -122,14 +122,16 @@ def sheetPicker():
     dfTable['DATE'] = pd.to_datetime(dfTable['DATE']).apply(lambda x: x.date())
     dfTable['DEBIT'] = dfTable['DEBIT'].round(decimals=2)
     dfTable['CREDIT'] = dfTable['CREDIT'].round(decimals=2)
-    # ITERATIONG THE TABLE ROWS
-
+    dfTable['BALANCE'] = (dfTable['DEBIT].cumsum() + dfTable['CREDIT'].cumsum()).round(decimals=2)
+    dfTable['INTEREST'] = round(dfTable['BALANCE'] * dfTable['DAILY INTEREST'] * (1/100), 2)
+    
+    # ITERATING THE TABLE ROWS
     startPeriod = dictionary[f'{clicked.get()}'][0]
     endPeriod = dictionary[f'{clicked.get()}'][1]
     period = dfTable['DATE'].between(startPeriod, endPeriod, inclusive=True)
     tableDataFrame = dfTable[period]
     for index, row in tableDataFrame.iterrows():
-        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT']])
+        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
 
 # FUNCTION TO ADD NEW TRANSACTIONS INTO THE TABLE AND DATABASE
 def rowPicker():
