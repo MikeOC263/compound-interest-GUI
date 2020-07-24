@@ -152,6 +152,8 @@ def rowPicker():
     dfRow['DATE'] = pd.to_datetime(dfRow['DATE']).apply(lambda x: x.date())
     dfRow['DEBIT'] = dfRow['DEBIT'].round(decimals=2)
     dfRow['CREDIT'] = dfRow['CREDIT'].round(decimals=2)
+    dfRow['BALANCE'] = (dfRow['DEBIT'].cumsum() + dfRow['CREDIT'].cumsum()).round(decimals=2)
+    dfRow['INTEREST'] = round(dfRow['BALANCE'] * dfRow['DAILY INTEREST'] * (1/100), 2)    
     periods = []
     for row in dfRow['DATE']:
         #
@@ -292,6 +294,8 @@ def rowPicker():
     txnDebits = dfRow['DEBIT']
     txnCredits = dfRow['CREDIT']
     txnPeriod = dfRow['PERIOD']
+    txnBalance = dfRow['BALANCE']
+    txnInterest = dfRow['INTEREST']                                  
     desiredDate = datetime.datetime.strptime(date_entry_variable.get(), "%Y-%m-%d").date()
     
     # STORE THE INDEX, RELATING TO THE 'PERIOD' FOR THE NEWLY ADDED TRANSACTION
@@ -349,7 +353,12 @@ def rowPicker():
             
         else:
             pass
-        
+    # RESTATING THE DATAFRAME COLUMNS'S CONDITIONS - FOR THE NEWLY ADDED 'DEBIT' & 'CREDIT' ENTRIES                                 
+    dfRow['DEBIT'] = dfRow['DEBIT'].round(decimals=2)
+    dfRow['CREDIT'] = dfRow['CREDIT'].round(decimals=2)
+    dfRow['BALANCE'] = dfRow['DEBIT'].cumsum() + dfRow['CREDIT'].cumsum()
+    dfRow['INTEREST'] = round(
+        dfRow['BALANCE'] * dfRow['DAILY INTEREST'] * (1/100), 2)        
     # FOR LOADING THE FILE INTO "book"
     book = load_workbook(
         '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx')
@@ -365,13 +374,13 @@ def rowPicker():
     # CLOSING THE PANDAS "XLSX WRITER" AND OUTPUTTING THE EXCEL FILE
     writer.save()    
     
-    # (been mov'd from lne 346 -347) FILTERING THE DATAFRAME BASED ON THE 'PERIOD' OF THE INPUTTED DATE
+    # FILTERING THE DATAFRAME BASED ON THE 'PERIOD' OF THE INPUTTED DATE
     filterMask = (dfRow['PERIOD'] == periodMask)
     dfRow = dfRow[filterMask]
     # INSERT THE NEWLY UPDATED DATAFRAME VALUES INTO THE TKK.TREEVIEW WIDGET
     print(dfRow)
     for index, row in dfRow.iterrows():
-        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT']])
+        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
         
 
 
@@ -435,7 +444,7 @@ tv.heading(5, text="INTEREST")
 tv.pack()
 # EXPORTING THE DATABASE INFO INTO THE "TREEVIEW" WIDGET (FOR DISPLAY)
 for index, row in df.iterrows():
-    tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT']])
+    tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
 
 
 # THE METHOD ON THE MAIN WINDOW WHICH WE EXECUTE WHEN WE WANT TO RUN OUR MAIN PROGRAM
