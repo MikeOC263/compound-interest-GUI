@@ -122,6 +122,16 @@ def sheetPicker():
     dfTable['DATE'] = pd.to_datetime(dfTable['DATE']).apply(lambda x: x.date())
     dfTable['DEBIT'] = dfTable['DEBIT'].round(decimals=2)
     dfTable['CREDIT'] = dfTable['CREDIT'].round(decimals=2)
+    periods = []
+    for row in dfTable['DATE']:
+        for x in range(18):
+            # IF THE 'row' (DATE) IS BETWEEN THE BOUNDS FOR THE 'FORMATTED PERIOD'
+            # THEN INLCUDE THAT 'FORMATTED PERIOD' TO THE GIVEN DATES IN THE 'PERIOD COLUMN'                                         
+            if (row >= defined_periods[x][0]) & (row <= defined_periods[x][1]):
+                periods.append(formatted_periods[x])
+            else:
+                pass
+    dfTable['PERIOD'] = periods
     dfTable['BALANCE'] = (dfTable['DEBIT].cumsum() + dfTable['CREDIT'].cumsum()).round(decimals=2)
     dfTable['INTEREST'] = round(dfTable['BALANCE'] * dfTable['DAILY INTEREST'] * (1/100), 2)
     
@@ -156,118 +166,15 @@ def rowPicker():
     dfRow['INTEREST'] = round(dfRow['BALANCE'] * dfRow['DAILY INTEREST'] * (1/100), 2)    
     periods = []
     for row in dfRow['DATE']:
-        #
-        start1 = datetime.datetime.strptime('2019-01-08', '%Y-%m-%d').date()
-        end1 = datetime.datetime.strptime('2019-02-07', '%Y-%m-%d').date()
-        period1 = "2019 | 08JAN - 07FEB"
-        #
-        start2 = datetime.datetime.strptime('2019-02-08', '%Y-%m-%d').date()
-        end2 = datetime.datetime.strptime('2019-03-07', '%Y-%m-%d').date()
-        period2 = "2019 | 08FEB - 07MAR"
-        #
-        start3 = datetime.datetime.strptime('2019-03-08', '%Y-%m-%d').date()
-        end3 = datetime.datetime.strptime('2019-04-07', '%Y-%m-%d').date()
-        period3 = "2019 | 08MAR - 07APR"
-        #
-        start4 = datetime.datetime.strptime('2019-04-08', '%Y-%m-%d').date()
-        end4 = datetime.datetime.strptime('2019-05-07', '%Y-%m-%d').date()
-        period4 = "2019 | 08APR - 07MAY"
-        #
-        start5 = datetime.datetime.strptime('2019-05-08', '%Y-%m-%d').date()
-        end5 = datetime.datetime.strptime('2019-06-09', '%Y-%m-%d').date()
-        period5 = "2019 | 08MAY - 09JUN"
-        #
-        start6 = datetime.datetime.strptime('2019-06-10', '%Y-%m-%d').date()
-        end6 = datetime.datetime.strptime('2019-07-07', '%Y-%m-%d').date()
-        period6 = "2019 | 10JUN - 07JUL"
-        #
-        start7 = datetime.datetime.strptime('2019-07-08', '%Y-%m-%d').date()
-        end7 = datetime.datetime.strptime('2019-08-07', '%Y-%m-%d').date()
-        period7 = "2019 | 08JUL - 07AUG"
-        #
-        start8 = datetime.datetime.strptime('2019-08-08', '%Y-%m-%d').date()
-        end8 = datetime.datetime.strptime('2019-09-08', '%Y-%m-%d').date()
-        period8 = "2019 | 08AUG - 08SEP"
-        #
-        start9 = datetime.datetime.strptime('2019-09-09', '%Y-%m-%d').date()
-        end9 = datetime.datetime.strptime('2019-10-07', '%Y-%m-%d').date()
-        period9 = "2019 | 09SEP - 07OCT"
-        #
-        start10 = datetime.datetime.strptime('2019-10-08', '%Y-%m-%d').date()
-        end10 = datetime.datetime.strptime('2019-11-07', '%Y-%m-%d').date()
-        period10 = "2019 | 08OCT - 07NOV"
-        #
-        start11 = datetime.datetime.strptime('2019-11-08', '%Y-%m-%d').date()
-        end11 = datetime.datetime.strptime('2019-12-08', '%Y-%m-%d').date()
-        period11 = "2019 | 08NOV - 08DEC"
-        #
-        start12 = datetime.datetime.strptime('2019-12-09', '%Y-%m-%d').date()
-        end12 = datetime.datetime.strptime('2020-01-07', '%Y-%m-%d').date()
-        period12 = "2019 | 09DEC - 07JAN"
-        #
-        start13 = datetime.datetime.strptime('2020-01-08', '%Y-%m-%d').date()
-        end13 = datetime.datetime.strptime('2020-02-09', '%Y-%m-%d').date()
-        period13 = "2020 | 08JAN - 09FEB"
-        #
-        start14 = datetime.datetime.strptime('2020-02-10', '%Y-%m-%d').date()
-        end14 = datetime.datetime.strptime('2020-03-08', '%Y-%m-%d').date()
-        period14 = "2020 | 10FEB - 08MAR"
-        #
-        start15 = datetime.datetime.strptime('2020-03-09', '%Y-%m-%d').date()
-        end15 = datetime.datetime.strptime('2020-04-07', '%Y-%m-%d').date()
-        period15 = "2020 | 09MAR - 07APR"
-        #
-        start16 = datetime.datetime.strptime('2020-04-08', '%Y-%m-%d').date()
-        end16 = datetime.datetime.strptime('2020-05-07', '%Y-%m-%d').date()
-        period16 = "2020 | 08APR - 07MAY"
-        #
-        start17 = datetime.datetime.strptime('2020-05-08', '%Y-%m-%d').date()
-        end17 = datetime.datetime.strptime('2019-06-07', '%Y-%m-%d').date()
-        period17 = "2020 | 08MAY - 07JUN"
-        #
-        start18 = datetime.datetime.strptime('2020-06-08', '%Y-%m-%d').date()
-        end18 = datetime.datetime.strptime('2020-07-07', '%Y-%m-%d').date()
-        period18 = "2020 | 08JUN - 07JUL"
-        #
-        if (row >= start1) & (row <= end1):
-            periods.append(period1)
-        elif (row >= start2) & (row <= end2):
-            periods.append(period2)
-        elif (row >= start3) & (row <= end3):
-            periods.append(period3)
-        elif (row >= start4) & (row <= end4):
-            periods.append(period4)
-        elif (row >= start5) & (row <= end5):
-            periods.append(period5)
-        elif (row >= start6) & (row <= end6):
-            periods.append(period6)
-        elif (row >= start7) & (row <= end7):
-            periods.append(period7)
-        elif (row >= start8) & (row <= end8):
-            periods.append(period8)
-        elif (row >= start9) & (row <= end9):
-            periods.append(period9)
-        elif (row >= start10) & (row <= end10):
-            periods.append(period10)
-        elif (row >= start11) & (row <= end11):
-            periods.append(period11)
-        elif (row >= start12) & (row <= end12):
-            periods.append(period12)
-        elif (row >= start13) & (row <= end13):
-            periods.append(period13)
-        elif (row >= start14) & (row <= end14):
-            periods.append(period14)
-        elif (row >= start15) & (row <= end15):
-            periods.append(period15)
-        elif (row >= start16) & (row <= end16):
-            periods.append(period16)
-            # FILLING IN THE LAST PERIOD (HACKY ALTERNATIVE)
-        elif (row >= start18) & (row <= end18):
-            periods.append(period18)
-            # FILLING IN THE SECOND TO LAST PERIOD - NOW THAT ALL OTHER PERIODS HAVE BEEN FILLED (HACKY ALTERNATIVE)
-        else:
-            periods.append(period17)
-    dfRow['PERIOD'] = periods
+        for x in range(18):
+            # IF THE 'row' (DATE) IS BETWEEN THE BOUNDS FOR THE 'FORMATTED PERIOD'
+            # THEN INLCUDE THAT 'FORMATTED PERIOD' TO THE GIVEN DATES IN THE 'PERIOD COLUMN'                                                                                 
+            if (row >= defined_periods[x][0]) & (row <= defined_periods[x][1]):
+                periods.append(formatted_periods[x])
+            else:
+                pass
+    dfRow['PERIOD'] = periods                                                         
+    
     
     # CHANGE "date_entry_variable.get()" FROM A 'STRING' -> 'DATETIME.DATE' CLASS
     # FOR THE PURPOSE OF GETTING THE CORRESPONDING PERIOD - TO THE INPUTTED DATE
@@ -356,6 +263,16 @@ def rowPicker():
     # RESTATING THE DATAFRAME COLUMNS'S CONDITIONS - FOR THE NEWLY ADDED 'DEBIT' & 'CREDIT' ENTRIES                                 
     dfRow['DEBIT'] = dfRow['DEBIT'].round(decimals=2)
     dfRow['CREDIT'] = dfRow['CREDIT'].round(decimals=2)
+    periods = []
+    for row in dfRow['DATE']:
+        for x in range(18):
+            # IF THE 'row' (DATE) IS BETWEEN THE BOUNDS FOR THE 'FORMATTED PERIOD'
+            # THEN INLCUDE THAT 'FORMATTED PERIOD' TO THE GIVEN DATES IN THE 'PERIOD COLUMN'                             
+            if (row >= defined_periods[x][0]) & (row <= defined_periods[x][1]):
+                periods.append(formatted_periods[x])
+            else:
+                pass
+    dfRow['PERIOD'] = periods                                  
     dfRow['BALANCE'] = dfRow['DEBIT'].cumsum() + dfRow['CREDIT'].cumsum()
     dfRow['INTEREST'] = round(
         dfRow['BALANCE'] * dfRow['DAILY INTEREST'] * (1/100), 2)        
