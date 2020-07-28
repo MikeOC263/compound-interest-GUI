@@ -151,28 +151,32 @@ def sheetPicker():
     # INSERTING THE DATAFRAME VALUES INTO THE TTK.TREEVIEW WIDGET-TABLE
     for index, row in tableDataFrame.iterrows():
         tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
-
+# ________________________________________________________________________________________________________________
 # FUNCTION TO ADD NEW TRANSACTIONS INTO THE TABLE AND DATABASE
 def rowPicker():
     # DELETING OLD ENTRIES FROM THE TABLE
     for i in tv.get_children():
         tv.delete(i)
+        
     # THE LABEL FOR "LAST TRANSACTION ADDED"
     titleMyLabel = Label(guiWindow, text="LAST TRANSACTION ADDED: ").place(
         x=705, y=50, width=200, height=20)
+    
     # FORMATTED STRINGS FOR INPUTTING THE MOST RECENT TRANSACTIONS
     transactionsMyLabel = Label(guiWindow, text=f"""DATE: {date_entry_variable.get()},
     DEBIT: {debit_entry_variable.get()},
     CREDIT: {credit_entry_variable.get()}""").place(x=705, y=65, width=200, height=90)
+    
     # READING THE DATABASE FOR THE NEW ENTRIES
     dfRow = pd.read_excel(
         '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx').fillna(0)
+    
     # SETTING UP THE NEW DATAFRAM COLUMNS
     dfRow['DATE'] = pd.to_datetime(dfRow['DATE']).apply(lambda x: x.date())
     dfRow['DEBIT'] = dfRow['DEBIT'].round(decimals=2)
     dfRow['CREDIT'] = dfRow['CREDIT'].round(decimals=2)
-    dfRow['BALANCE'] = (dfRow['DEBIT'].cumsum() + dfRow['CREDIT'].cumsum()).round(decimals=2)
-    dfRow['INTEREST'] = round(dfRow['BALANCE'] * dfRow['DAILY INTEREST'] * (1/100), 2)    
+    
+    # CREATING THE 'PERIOD' COLUMN, BY MAPPING THE RELEVANT 'PERIOD' FOR EACH DAY/DATE
     periods = []
     for row in dfRow['DATE']:
         for x in range(18):
@@ -205,13 +209,13 @@ def rowPicker():
     txnDict = dict(date=dateEntry, debit=debit_entry_variable.get(),
                    credit=credit_entry_variable.get(), period=periodEntry)
     
-    # SETTING THE PARAMETERS
+    # STORING THE DATAFRAME COLUMNS IN VARIABLES - FOR EASE
     txnDates = dfRow['DATE']
     txnDebits = dfRow['DEBIT']
     txnCredits = dfRow['CREDIT']
-    txnPeriod = dfRow['PERIOD']
-    txnBalance = dfRow['BALANCE']
-    txnInterest = dfRow['INTEREST']                                  
+    
+    # CONVERTS THE INPUTTED DATE INTO A 'datetime.date' TYPE
+    # SO THAT IT CAN BE COMPARED AGAINST OTHER DATES
     desiredDate = datetime.datetime.strptime(date_entry_variable.get(), "%Y-%m-%d").date()
     
     # STORE THE INDEX, RELATING TO THE 'PERIOD' FOR THE NEWLY ADDED TRANSACTION
@@ -224,24 +228,15 @@ def rowPicker():
             periodNo = value
         else:
             pass
+        
+    # THIS STORES THE 'higher' FORMATTED PERIODS, INTO A LIST CALLED 'firstPeriods'    
     for key, value in periodDict.items():
         if value > periodNo:
             firstPeriods.append(key)
         else:
             pass
-        
-    # ALL OF THE DATES WHICH NEED TO INCLUDE THE NEWLY ADDED TXN WITHIN THEIR 'DEBIT' & 'CREDIT' (more so the Debit)
-    # DATES ARE IN 'datetime.date' FORMAT
-    for period in firstPeriods:
-        periodDates = enumerate(dfRow.loc[dfRow['PERIOD'] == period, 'DATE'])
-        for index, date in periodDates:
-            if index == 0:
-                print("\n", "period:__ ", f"{period}", "type(date):__ ", type(
-                    date), "date:__ ", date)
-                pass
-    
-    
-    # EXTRACTING THE CORRESPONDING "PERIOD"
+   
+    # EXTRACTING THE CORRESPONDING "PERIOD" - WHICH IS IMPORTANT AS YOU WANT TO SHOW ONLY A SINLGE 'formatted_period'
     for index, date in txnDates.items():
         if date == desiredDate:
             periodMask = dfRow['PERIOD'][index]
@@ -251,27 +246,38 @@ def rowPicker():
         
     # TURNING DATAFRAME TO DICTIONARY, SO TXN VALUES CAN BE EDITED FROM RECORDS
     dataDict = dfRow.to_dict('dict')
+    
+    # UPDATES THE ADDED TRANSACTION FOR THE "DEBIT" & "CREDIT" COLUMNS
+    # RECALL THAT 'txnDates' IS OF CLASS - class 'pandas.core.series.Series'>
     for index, date in txnDates.items():
         # IF 'DATAFRAME DATE' == 'INPUTTED DATE' THEN:
         if date == desiredDate:
+            
             # ADDS THE INPUTTED 'DEBIT' NUMBER TO THE RECORDED 'DEBIT' NUMBER IN DATABASE
             newDebitAmount = txnDebits[index] + \
                 float(debit_entry_variable.get())
+            
             # ASSIGN THE NEW NUMBER FOR THE SPECIFIC INDEX, OF THE 'DEBIT' COLUMN
             dataDict['DEBIT'][index] = newDebitAmount
+            
             # ADDS THE INPUTTED 'CREDIT' NUMBER TO THE RECORDED 'CREDIT' NUMBER IN DATABASE
             newCreditAmount = txnCredits[index] + \
                 float(credit_entry_variable.get())
+            
             # ASSIGN THE NEW NUMBER FOR THE SPECIFIC INDEX, OF THE 'CREDIT' COLUMN
             dataDict['CREDIT'][index] = newCreditAmount
+            
             # TURNING THE DICTIONARY BACK INTO A DATAFRAME, AS NEW TXN VALUES NEED TO BE CEMENTED IN
             dfRow = dfRow.from_dict(dataDict)
             
         else:
             pass
+        
     # RESTATING THE DATAFRAME COLUMNS'S CONDITIONS - FOR THE NEWLY ADDED 'DEBIT' & 'CREDIT' ENTRIES                                 
     dfRow['DEBIT'] = dfRow['DEBIT'].round(decimals=2)
     dfRow['CREDIT'] = dfRow['CREDIT'].round(decimals=2)
+    
+    # CREATING THE 'PERIOD' COLUMN, BY MAPPING THE RELEVANT 'PERIOD' FOR EACH DAY/DATE
     periods = []
     for row in dfRow['DATE']:
         for x in range(18):
@@ -281,34 +287,51 @@ def rowPicker():
                 periods.append(formatted_periods[x])
             else:
                 pass
-    dfRow['PERIOD'] = periods                                  
-    dfRow['BALANCE'] = dfRow['DEBIT'].cumsum() + dfRow['CREDIT'].cumsum()
+    dfRow['PERIOD'] = periods 
+    
+    # FILTERING THE DATAFRAME BASED ON THE 'PERIOD' OF THE INPUTTED DATE
+    filterMask = (dfRow['PERIOD'] == periodMask)
+    
+    # APPLIES/PROCESSES THE FILTER OF THE PERIOD, TO THE DATAFRAME
+    dfRow = dfRow[filterMask]     
+    
+    # ASSIGNING THE DATAFRAME 'BALANCE' ONCE ITS BEEN FILTERED FOR ITS PERIOD
+    dfRow['BALANCE'] = (dfRow['DEBIT'].cumsum() +
+                        dfRow['CREDIT'].cumsum()).round(decimals=2)
+    
+    # ASSIGNING THE DATAFRAME 'INTEREST' ONCE ITS BEEN FILTERED FOR ITS PERIOD
     dfRow['INTEREST'] = round(
-        dfRow['BALANCE'] * dfRow['DAILY INTEREST'] * (1/100), 2)        
+        dfRow['BALANCE'] * dfRow['DAILY INTEREST'] * (1/100), 2)
+    
     # FOR LOADING THE FILE INTO "book"
     book = load_workbook(
         '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx')
+    
     # CREATES A PANDAS EXCEL WRITER BY USING AN "opnpyxl" ENGINE ONTO THE "INITIAL DATABASE"
     writer = pd.ExcelWriter(
         '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx', engine='openpyxl')
+    
     # SETTING THE "writer.book" VALUE TO BE "book"
     writer.book = book
+    
     # CREATES A DICTIONARY OF KEY/VALUE PAIRS - {'sheet_titles' : sheet}
     writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
+    
     # CONVERTS THE "DATAFRAME" OBJECT INTO AN "XLSX WRITER" OBJECT
     dfRow.to_excel(writer, sheet_name='Sheet1', index=False)
+    
     # CLOSING THE PANDAS "XLSX WRITER" AND OUTPUTTING THE EXCEL FILE
     writer.save()    
     
     # FILTERING THE DATAFRAME BASED ON THE 'PERIOD' OF THE INPUTTED DATE
     filterMask = (dfRow['PERIOD'] == periodMask)
     dfRow = dfRow[filterMask]
-    # INSERT THE NEWLY UPDATED DATAFRAME VALUES INTO THE TKK.TREEVIEW WIDGET
-    print(dfRow)
+    
+    # ONLY INSERTS THE NEWLY UPDATED DATAFRAME VALUES INTO THE TKK.TREEVIEW WIDGET
+    print("\n\n", "dfRow:__ ", "\n\n", dfRow)
     for index, row in dfRow.iterrows():
-        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
-        
-
+        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])      
+# ________________________________________________________________________________________________________________        
 
 # THE SELECTED OPTION, FROM THE DROPDOWN-MENU, GETS SET AS A STRING VARIABLE.
 clicked = StringVar()
@@ -376,13 +399,5 @@ for index, row in df.iterrows():
 # THE METHOD ON THE MAIN WINDOW WHICH WE EXECUTE WHEN WE WANT TO RUN OUR MAIN PROGRAM
 # This method will loop forever, waiting for events from the user...
 guiWindow.mainloop()
-
 # ________________________________________________________________________________________________________________
 
-# print(defined_periods)
-
-# [datetime.date(2019, 1, 8), datetime.date(2019, 2, 7)]
-# print(defined_periods[0])
-
-# [datetime.date(2019, 1, 8)
-# print(defined_periods[0][0])
