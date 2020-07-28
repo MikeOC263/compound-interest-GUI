@@ -77,13 +77,9 @@ for index, date in period_dates:
         whole_period = whole_period.upper()
         formatted_periods.append(whole_period)
         
-
+# CREATING A DICTIONARY WITH (formatted_period,[beginning_point,end_point])
+# ALLOWING YOU TO DETERMINE EACH formatted4_periods's BEGINNING AND END POINT
 dictionary = dict(zip(formatted_periods, defined_periods))
-
-
-# ________________________________________________________________________________________________________________
-
-# print(df)
 
 # ________________________________________________________________________________________________________________
 
@@ -102,15 +98,17 @@ frameWidget = Frame(guiWindow)
 # POSITIONING OF THE CONTAINER WIDGET
 frameWidget.place(x=20, y=200, width=1100, height=700)
 
-
+# ________________________________________________________________________________________________________________
 # FUNCTION TO CHANGE THE TABLES DISPLAYED MONTH
 def sheetPicker():
     # "CURRENT TABLE SELECTED" LABEL
     tableSelectedLabel = Label(guiWindow, text="CURRENT TABLE SELECTED").place(
         x=280, y=45, width=200, height=30)
+    
     # CORRESPONDING "DATE" FOR TABLE
     dateSelectedLabel = Label(guiWindow, text=clicked.get()).place(
         x=280, y=65, width=200, height=30)
+    
     # DELETING THE OLD TABLE DATA
     for i in tv.get_children():
         tv.delete(i)
@@ -118,6 +116,7 @@ def sheetPicker():
     # CREATING A NEW DATAFRAME TO EXTRACT FROM
     dfTable = pd.read_excel(
         '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx').fillna(0)
+    
     # SETTING UP THE NEW DATAFRAME COLUMNS
     dfTable['DATE'] = pd.to_datetime(dfTable['DATE']).apply(lambda x: x.date())
     dfTable['DEBIT'] = dfTable['DEBIT'].round(decimals=2)
@@ -132,14 +131,24 @@ def sheetPicker():
             else:
                 pass
     dfTable['PERIOD'] = periods
-    dfTable['BALANCE'] = (dfTable['DEBIT].cumsum() + dfTable['CREDIT'].cumsum()).round(decimals=2)
-    dfTable['INTEREST'] = round(dfTable['BALANCE'] * dfTable['DAILY INTEREST'] * (1/100), 2)
     
-    # ITERATING THE TABLE ROWS
+    # STORING THE START/FINISH DATE FOR THE PERIOD INTO 2 SEPERATE VARIABLES
     startPeriod = dictionary[f'{clicked.get()}'][0]
     endPeriod = dictionary[f'{clicked.get()}'][1]
+    
+    # ESTABLISHING THE DATAFRAME FILTER FOR THE PERIOD IN QUESTION
     period = dfTable['DATE'].between(startPeriod, endPeriod, inclusive=True)
+    
+    # PROCESSING THE FILTER OF THE PERIOD, TO THE DATAFRAME     
     tableDataFrame = dfTable[period]
+    
+    # ASSIGNING THE DATAFRAME 'BALANCE' ONCE ITS BEEN FILTERED FOR ITS PERIOD
+    tableDataFrame['BALANCE'] = (tableDataFrame['DEBIT'].cumsum() + tableDataFrame['CREDIT'].cumsum()).round(decimals=2)
+    
+    # ASSIGNING THE DATAFRAME 'INTEREST' ONCE ITS BEEN FILTERED FOR ITS PERIOD
+    tableDataFrame['INTEREST'] = round(tableDataFrame['BALANCE'] * tableDataFrame['DAILY INTEREST'] * (1/100), 2)
+    
+    # INSERTING THE DATAFRAME VALUES INTO THE TTK.TREEVIEW WIDGET-TABLE
     for index, row in tableDataFrame.iterrows():
         tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
 
