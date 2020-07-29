@@ -310,6 +310,9 @@ def rowPicker():
     # ASSIGNING THE DATAFRAME 'INTEREST' ONCE ITS BEEN FILTERED FOR ITS PERIOD
     dfRow['INTEREST'] = round(
         dfRow['BALANCE'] * dfRow['DAILY INTEREST'] * (1/100), 2)
+       
+    # STORING THE 'Total Interest' INTO A VARIABLE, OF THE GIVEN 'PERIOD'.
+    interestSum2 = dfRow['INTEREST'].sum()
     
     # FOR LOADING THE FILE INTO "book"
     book = load_workbook(
@@ -338,7 +341,10 @@ def rowPicker():
     # ONLY INSERTS THE NEWLY UPDATED DATAFRAME VALUES INTO THE TKK.TREEVIEW WIDGET
     print("\n\n", "dfRow:__ ", "\n\n", dfRow)
     for index, row in dfRow.iterrows():
-        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])      
+        tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
+        
+    # INSERTING THE 'Total Interst' INTO THE BOTTOM OF THE TTK.TREEVIEW WIDGET TABLE.
+    tv.insert('', 'end', values=["", "", "", "TOTAL INTEREST:", interestSum2])
 # ________________________________________________________________________________________________________________        
 
 # THE SELECTED OPTION, FROM THE DROPDOWN-MENU, GETS SET AS A STRING VARIABLE.
