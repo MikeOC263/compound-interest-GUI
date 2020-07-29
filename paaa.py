@@ -96,7 +96,7 @@ guiWindow.resizable(height=False, width=False)
 # A CONTAINER WIDGET IN THE MAIN WINDOW
 frameWidget = Frame(guiWindow)
 # POSITIONING OF THE CONTAINER WIDGET
-frameWidget.place(x=20, y=200, width=1100, height=700)
+frameWidget.place(x=20, y=155, width=1100, height=700)
 
 # ________________________________________________________________________________________________________________
 # FUNCTION TO CHANGE THE TABLES DISPLAYED MONTH
