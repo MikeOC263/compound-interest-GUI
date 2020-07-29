@@ -148,9 +148,17 @@ def sheetPicker():
     # ASSIGNING THE DATAFRAME 'INTEREST' ONCE ITS BEEN FILTERED FOR ITS PERIOD
     tableDataFrame['INTEREST'] = round(tableDataFrame['BALANCE'] * tableDataFrame['DAILY INTEREST'] * (1/100), 2)
     
+    # CREATING A VARIABLE TO STORE THE 'TOTAL INTEREST' FOR THAT PERIOD
+    interestSum1 = (tableDataFrame['INTEREST'].sum()).round(decimals=2)
+    
     # INSERTING THE DATAFRAME VALUES INTO THE TTK.TREEVIEW WIDGET-TABLE
     for index, row in tableDataFrame.iterrows():
         tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
+        
+    # INSERTING THE 'Total Interest' VALUE INTO THE TTK.TREEVIEW WIDGET-TABLE
+    tv.insert('', 'end', values=['', '', '', 'TOTAL INTEREST: ', interestSum1])
+    
+        
 # ________________________________________________________________________________________________________________
 # FUNCTION TO ADD NEW TRANSACTIONS INTO THE TABLE AND DATABASE
 def rowPicker():
