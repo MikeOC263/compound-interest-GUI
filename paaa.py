@@ -375,7 +375,7 @@ add_transaction_button = Button(guiWindow, text="ADD TRANSACTION...", command=ro
 
 # WIDGET USED TO DISPLAY ITEMS WITH A HIERACHY
 tv = ttk.Treeview(frameWidget, columns=(1, 2, 3, 4, 5),
-                  show="headings", height="32")
+                  show="headings", height="38")
 # THE ACTION OF CENTERING THE COLUMNS ON DISPLAY, WITHIN THE CONTAINER WIDGET
 tv.column(1, anchor=tk.CENTER)
 tv.column(2, anchor=tk.CENTER)
