@@ -15,6 +15,9 @@ df['CREDIT'] = df['CREDIT'].round(decimals=2)
 df['BALANCE'] = (df['DEBIT'].cumsum() + df['CREDIT'].cumsum()).round(decimals=2)
 df['INTEREST'] = round(df['BALANCE'] * df['DAILY INTEREST'] * (1/100), 2)
 
+# STORING THE 'Total Interest' INTO A VARIABLE
+interestSum = df['INTEREST'].sum()
+
 # ________________________________________________________________________________________________________
 # USING SEPERATE DATAFRAME TO EXTRACT DATES
 dfDates = pd.read_excel(
@@ -408,6 +411,9 @@ tv.pack()
 # EXPORTING THE DATABASE INFO INTO THE "TREEVIEW" WIDGET (FOR DISPLAY)
 for index, row in df.iterrows():
     tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
+    
+# INSERTING THE 'Total Interest', INTO THE INITIAL DATAFRAME
+tv.insert('', 'end', values=["", "", "", "TOTAL INTEREST:", interestSum]) 
 
 
 # THE METHOD ON THE MAIN WINDOW WHICH WE EXECUTE WHEN WE WANT TO RUN OUR MAIN PROGRAM
