@@ -8,7 +8,9 @@ from datetime import timedelta
 # READING THE DATABASE FOR OUR RAW DATA SET
 df = pd.read_excel(
     '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx', nrows=31).fillna(0)
+
 # PREPPING DATAFRAME COLUMNS
+# (NO NEED TO INCLUDE THE 'PERIOD' COLUMN, TO THE INITIAL DATAFRAME BECAUSE IT'S PURPOSE IS ONLY FOR 'CHANGING TABLE' & 'ADDING TRANSACTIONS')
 df['DATE'] = pd.to_datetime(df['DATE']).apply(lambda x: x.date())
 df['DEBIT'] = df['DEBIT'].round(decimals=2)
 df['CREDIT'] = df['CREDIT'].round(decimals=2)
@@ -19,12 +21,15 @@ df['INTEREST'] = round(df['BALANCE'] * df['DAILY INTEREST'] * (1/100), 2)
 interestSum = df['INTEREST'].sum()
 
 # ________________________________________________________________________________________________________
+
 # USING SEPERATE DATAFRAME TO EXTRACT DATES
 dfDates = pd.read_excel(
     '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx').fillna(0)
-# FORMATTING THE DATES IN THE NEW DATAFRAME
+
+# FORMATTING THE DATES IN THE NEW DATAFRAME (turns them into <class 'datetime.date'> )
 dfDates['DATE'] = pd.to_datetime(dfDates['DATE']).apply(lambda x: x.date())
-# THE 8th OF ALL MONTHS
+
+# GATHERING THE 8th FOR EACH MONTH
 start_dates = []
 txn_dates = dfDates['DATE']
 for index, date in txn_dates.items():
@@ -32,8 +37,8 @@ for index, date in txn_dates.items():
         start_dates.append(date)
     else:
         pass
-
-# WHEN 8th OCCURS ON A SATURDAY
+    
+# WHEN 8th OCCURS ON A "SATURDAY" (== 5)
 for date in start_dates:
     if date.weekday() == 5:
         new_start_date = date + timedelta(days=2)
@@ -42,7 +47,7 @@ for date in start_dates:
         # print("date.weekday() == 5", date)
         # print("new_start_date", new_start_date)
 
-# WHEN 8th OCCURS ON A SUNDAY
+# WHEN 8th OCCURS ON A "SUNDAY" (== 6)
 for date in start_dates:
     if date.weekday() == 6:
         new_start_date = date + timedelta(days=1)
@@ -51,37 +56,53 @@ for date in start_dates:
         # print("date.weekday() == 6", date)
         # print("new_start_date", new_start_date)
 
-# SORTING IN ORDER THE NEWLY ADJUSTED DAYS (anything but the 8th)
+# SORTING IN ORDER THE NEWLY ADJUSTED DAYS 
+# (.....HERE, THE start_dates DON'T NECESSARILT OCCUR ON THE 8TH) 
 sorted_start_dates = sorted(start_dates)
 
 # SETTING UP DATE DATE PAIRS - PER PERIOD
+# period_dates - IS A NUMBERED/INDEXED VERSION OF THE start_period, FOR EACH PERIOD
+# - S.T IF THIS INDEX DOESN'T MATCH THE NO. OF (INDIVIDUAL) START DATES
 period_dates = enumerate(sorted_start_dates)
 number_of_elements = len(sorted_start_dates)
 index_of_last_element = number_of_elements - 1
 formatted_periods = []
 defined_periods = []
 for index, date in period_dates:
+    # IF THE start_period, ISN'T THE LAST ONE (CHRONOLOGICALLY), OUT OF THE LIST THEN ASSIGN ITS'...
     if index != index_of_last_element:
+        # (START DATE)
         start_period = sorted_start_dates[index]
+        # (END DATE)
         end_period = sorted_start_dates[(
             index + 1)] - timedelta(days=1)
+        # (THEN GROUP THE ABOVE, TWO DATES INTO A "defined_period")
         defined_periods.append([start_period, end_period])
+        # (AND THEN ESTABLISH THE formatted_period NAME, VIA IT'S START & END DATE)
         whole_period = start_period.strftime(
             '%Y') + " " + "|" + " " + start_period.strftime('%d%b') + " - " + end_period.strftime('%d%b')
+        # (CAPITALIZE THE formatted_period)
         whole_period = whole_period.upper()
+        # (THEN COLLATE THE formatted_periods INTO A LIST, TO ACCESS LATER)
         formatted_periods.append(whole_period)
     else:
         # ALLOWING US TO PRODUCE THE LAST "formatted_period" -- "2020 | 08JUN - 07 JUL"
+        # (START DATE)
         start_period = sorted_start_dates[index]
+        # (END DATE)
         end_period = sorted_start_dates[index] + timedelta(days=29)
+        # (THEN GROUP THE ABOVE, TWO DATES INTO A "defined_period")
         defined_periods.append([start_period, end_period])
+        # (AND THEN ESTABLISH THE formatted_period NAME, VIA IT'S START & END DATE)
         whole_period = start_period.strftime(
             '%Y') + " " + "|" + " " + start_period.strftime('%d%b') + " - " + end_period.strftime('%d%b')
+        # (CAPITALIZE THE formatted_period)
         whole_period = whole_period.upper()
+        # (THEN COLLATE THE formatted_periods INTO A LIST, TO ACCESS LATER)
         formatted_periods.append(whole_period)
         
 # CREATING A DICTIONARY WITH (formatted_period,[beginning_point,end_point])
-# ALLOWING YOU TO DETERMINE EACH formatted4_periods's BEGINNING AND END POINT
+# ALLOWING YOU TO DETERMINE EACH formatted_periods's BEGINNING AND END POINT
 dictionary = dict(zip(formatted_periods, defined_periods))
 
 # ________________________________________________________________________________________________________________
@@ -104,6 +125,10 @@ frameWidget.place(x=20, y=155, width=1100, height=700)
 # ________________________________________________________________________________________________________________
 # FUNCTION TO CHANGE THE TABLES DISPLAYED MONTH
 def sheetPicker():
+    # DELETING THE OLD TABLE DATA
+    for i in tv.get_children():
+        tv.delete(i)
+        
     # "CURRENT TABLE SELECTED" LABEL
     tableSelectedLabel = Label(guiWindow, text="CURRENT TABLE SELECTED").place(
         x=280, y=45, width=200, height=30)
@@ -112,10 +137,6 @@ def sheetPicker():
     dateSelectedLabel = Label(guiWindow, text=clicked.get()).place(
         x=280, y=65, width=200, height=30)
     
-    # DELETING THE OLD TABLE DATA
-    for i in tv.get_children():
-        tv.delete(i)
-
     # CREATING A NEW DATAFRAME TO EXTRACT FROM
     dfTable = pd.read_excel(
         '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx').fillna(0)
@@ -124,6 +145,8 @@ def sheetPicker():
     dfTable['DATE'] = pd.to_datetime(dfTable['DATE']).apply(lambda x: x.date())
     dfTable['DEBIT'] = dfTable['DEBIT'].round(decimals=2)
     dfTable['CREDIT'] = dfTable['CREDIT'].round(decimals=2)
+    
+    # CREATING THE 'PERIOD' COLUMN, BY MAPPING THE RELEVANT 'PERIOD' FOR EACH DAY/DATE
     periods = []
     for row in dfTable['DATE']:
         for x in range(18):
@@ -136,6 +159,7 @@ def sheetPicker():
     dfTable['PERIOD'] = periods
     
     # STORING THE START/FINISH DATE FOR THE PERIOD INTO 2 SEPERATE VARIABLES
+    # dictionary[ formatted_period, [start_period, end_period] ]
     startPeriod = dictionary[f'{clicked.get()}'][0]
     endPeriod = dictionary[f'{clicked.get()}'][1]
     
@@ -216,9 +240,9 @@ def rowPicker():
     # STORING 'formatted_periods' WITH 'indexes' INTO A DICTIONARY (periodDict)
     periodDict = dict(zip(formatted_periods, idx_formatted_periods))
     
-    # CREATING A DICTIONARY FOR NEWLY ADDED TRANSACTION (including all relevant details)
-    txnDict = dict(date=dateEntry, debit=debit_entry_variable.get(),
-                   credit=credit_entry_variable.get(), period=periodEntry)
+#     # CREATING A DICTIONARY FOR NEWLY ADDED TRANSACTION (including all relevant details)
+#     txnDict = dict(date=dateEntry, debit=debit_entry_variable.get(),
+#                    credit=credit_entry_variable.get(), period=periodEntry)
     
     # STORING THE DATAFRAME COLUMNS IN VARIABLES - FOR EASE
     txnDates = dfRow['DATE']
@@ -240,14 +264,15 @@ def rowPicker():
         else:
             pass
         
-    # THIS STORES THE 'higher' FORMATTED PERIODS, INTO A LIST CALLED 'firstPeriods'    
+    # THIS STORES THE 'higher' FORMATTED PERIODS, (COMPARED TO PERIOD RELATING TO THE NEWLY ADDED TXN)
+    # IT STORES THESE 'higher' PERIODS INTO A LIST CALLED 'firstPeriods'   
     for key, value in periodDict.items():
         if value > periodNo:
             firstPeriods.append(key)
         else:
             pass
    
-    # EXTRACTING THE CORRESPONDING "PERIOD" - WHICH IS IMPORTANT AS YOU WANT TO SHOW ONLY A SINLGE 'formatted_period'
+    # ASSIGNS THE CURRENT PERIOD, AS A FILTER, TO THE CURRENT DATAFRAME
     for index, date in txnDates.items():
         if date == desiredDate:
             periodMask = dfRow['PERIOD'][index]
@@ -278,17 +303,17 @@ def rowPicker():
             # ASSIGN THE NEW NUMBER FOR THE SPECIFIC INDEX, OF THE 'CREDIT' COLUMN
             dataDict['CREDIT'][index] = newCreditAmount
             
-            # TURNING THE DICTIONARY BACK INTO A DATAFRAME, AS NEW TXN VALUES NEED TO BE CEMENTED IN
-            dfRow = dfRow.from_dict(dataDict)
-            
         else:
             pass
+
+    # TURNING THE DICTIONARY BACK INTO A DATAFRAME, AS NEW TXN VALUES NEED TO BE CEMENTED IN                               
+    dfRow = dfRow.from_dict(dataDict)    
         
     # RESTATING THE DATAFRAME COLUMNS'S CONDITIONS - FOR THE NEWLY ADDED 'DEBIT' & 'CREDIT' ENTRIES                                 
     dfRow['DEBIT'] = dfRow['DEBIT'].round(decimals=2)
     dfRow['CREDIT'] = dfRow['CREDIT'].round(decimals=2)
     
-    # CREATING THE 'PERIOD' COLUMN, BY MAPPING THE RELEVANT 'PERIOD' FOR EACH DAY/DATE
+    # (&) CREATING THE 'PERIOD' COLUMN, BY MAPPING THE RELEVANT 'PERIOD' FOR EACH DAY/DATE
     periods = []
     for row in dfRow['DATE']:
         for x in range(18):
@@ -393,21 +418,25 @@ add_transaction_button = Button(guiWindow, text="ADD TRANSACTION...", command=ro
 # WIDGET USED TO DISPLAY ITEMS WITH A HIERACHY
 tv = ttk.Treeview(frameWidget, columns=(1, 2, 3, 4, 5),
                   show="headings", height="38")
+
 # THE ACTION OF CENTERING THE COLUMNS ON DISPLAY, WITHIN THE CONTAINER WIDGET
 tv.column(1, anchor=tk.CENTER)
 tv.column(2, anchor=tk.CENTER)
 tv.column(3, anchor=tk.CENTER)
 tv.column(4, anchor=tk.CENTER)
 tv.column(5, anchor=tk.CENTER)
+
 # LINKS THE "EXCEL TITLE COLUMNS" WITH THE GUI'S COLUMNS THAT ARE ON DISPLAY
 tv.heading(1, text="DATE")
 tv.heading(2, text="DEBIT")
 tv.heading(3, text="CREDIT")
 tv.heading(4, text="BALANCE")
 tv.heading(5, text="INTEREST")
+
 # THE ACTION OF PLACING THE "TREEVIEW" WIDGET INTO BLOCKS - BEFORE INSERTING INTO THE MAIN WINDOW
 # (MORE SO FOR THE UPDATING OF THE TABLE....)
 tv.pack()
+
 # EXPORTING THE DATABASE INFO INTO THE "TREEVIEW" WIDGET (FOR DISPLAY)
 for index, row in df.iterrows():
     tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
