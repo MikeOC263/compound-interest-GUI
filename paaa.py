@@ -390,8 +390,13 @@ def rowPicker():
     for index, row in dfRow.iterrows():
         tv.insert('', 'end', values=[row['DATE'], row['DEBIT'], row['CREDIT'], row['BALANCE'], row['INTEREST']])
         
-    # INSERTING THE 'Total Interst' INTO THE BOTTOM OF THE TTK.TREEVIEW WIDGET TABLE.
-    tv.insert('', 'end', values=["", "", "", "TOTAL INTEREST:", interestSum2])
+    # AFTER THE ADDED TXN, INSERTING THE 'Total Interest' VALUE INTO THE BOTTOM OF THE TTK.TREEVIEW WIDGET TABLE.
+    tv.insert('', 'end', values=["", "", "", "TOTAL INTEREST (AFTER TXN):", interestSum2])
+    
+    
+    # BEFORE THE ADDED TXN, THIS INSERTS THE 'Total Interest' VALUE INTO THE TTK.TREEVIEW WIDGET
+    tv.insert('', 'end', values=["", "", "",
+                                 "TOTAL INTEREST (B4 TXN):", interestSum1])
     
     # INSERTS THE 'Change in Interest' VALUE INTO THE TTK.TREEVIEW WIDGET
     tv.insert('', 'end', values=["", "", "",
