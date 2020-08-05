@@ -163,17 +163,23 @@ def sheetPicker():
     startPeriod = dictionary[f'{clicked.get()}'][0]
     endPeriod = dictionary[f'{clicked.get()}'][1]
     
-    # ESTABLISHING THE DATAFRAME FILTER FOR THE PERIOD IN QUESTION
-    period = dfTable['DATE'].between(startPeriod, endPeriod, inclusive=True)
     
-    # PROCESSING THE FILTER OF THE PERIOD, TO THE DATAFRAME     
-    tableDataFrame = dfTable[period]
+    # CREATING A MASK TO FILTER/EXTRACT THE CORRECT DATES FOR THE RELEVANT PERIOD
+    periodMask = (dfTable['DATE'] >= startPeriod) & (dfTable['DATE'] <= endPeriod)
+    
+    # APPLYING THE MASK TO THE DATAFRAME
+    dfTable = dfTable.loc[periodMask]
+    
+    # AFTER APPLYING THE MASK, THE 'Daily Interest' COLUMN SEEMS TO BE DELETED (as wasn't explicitly defined before?s)
+    # SO WE REAPPLY THE NUMBER MANUALLY - ONCE THE DATAFRAME HAS BEEN MODIFIED
+    dfTable['DAILY INTEREST'] = (21.87/365)
+    
     
     # ASSIGNING THE DATAFRAME 'BALANCE' ONCE ITS BEEN FILTERED FOR ITS PERIOD
-    tableDataFrame['BALANCE'] = (tableDataFrame['DEBIT'].cumsum() + tableDataFrame['CREDIT'].cumsum()).round(decimals=2)
+    dfTable['BALANCE'] = (dfTable['DEBIT'].cumsum() + dfTable['CREDIT'].cumsum()).round(decimals=2)
     
     # ASSIGNING THE DATAFRAME 'INTEREST' ONCE ITS BEEN FILTERED FOR ITS PERIOD
-    tableDataFrame['INTEREST'] = round(tableDataFrame['BALANCE'] * tableDataFrame['DAILY INTEREST'] * (1/100), 2)
+    dfTable['INTEREST'] = round(dfTable['BALANCE'] * dfTable['DAILY INTEREST'] * (1/100), 2)
     
     # CREATING A VARIABLE TO STORE THE 'TOTAL INTEREST' FOR THAT PERIOD
     interestSum1 = (tableDataFrame['INTEREST'].sum()).round(decimals=2)
