@@ -227,7 +227,14 @@ def rowPicker():
                 periods.append(formatted_periods[x])
             else:
                 pass
-    dfRow['PERIOD'] = periods                                                         
+    dfRow['PERIOD'] = periods    
+    
+    
+    # ADD'S THE DATAFRAME BALANCE VIA (1) THE PERIOD (2) THE CUMULATIVE SUM
+    dfRow['BALANCE'] = dfRow.groupby('PERIOD')['DEBIT'].transform(lambda x: x.cumsum()) + dfRow.groupby('PERIOD')['CREDIT'].transform(lambda x: x.cumsum())
+    
+    # "BY PERIOD" - ESTABLISHING THE AMOUNT OF INTEREST ACCRUED PER DAY/DAYS 
+    dfRow['INTEREST'] = round(dfRow['BALANCE'] * dfRow['DAILY INTEREST'] * (1/100), 2)    
     
     
     # CHANGE "date_entry_variable.get()" FROM A 'STRING' -> 'DATETIME.DATE' CLASS
@@ -237,6 +244,11 @@ def rowPicker():
     
     # THE CURRENT CORRESPONDNING PERIOD - FOR THE NEWLY ADDED TRANSACTION
     periodEntry = dfRow.loc[dfRow['DATE'] == dateEntry, 'PERIOD'].values[0]
+    
+    
+    # ESTABLISHING WHAT THE TOTAL INTEREST WAS BEFORE ADDING IN A NEW TRANSACTION 
+    interestSum1 = dfRow.loc[dfRow['PERIOD'] == periodEntry, 'INTEREST'].sum()    
+    
     
     # CREATING INDEXES FOR EACH "formatted_period", TO BE USED LATER ON FOR COMPARISONS
     idx_formatted_periods = []
@@ -348,6 +360,11 @@ def rowPicker():
     # STORING THE 'Total Interest' INTO A VARIABLE, OF THE GIVEN 'PERIOD'.
     interestSum2 = dfRow['INTEREST'].sum()
     
+    # EXTRACTING THE CHANGE IN INTEREST ACCRUED, DUE TO THE NEW TXN ADDED 
+    interestDifferential = interestSum2 - interestSum1
+    interestDifferential = pd.to_numeric(interestDifferential, downcast='float')
+    interestDifferential = interestDifferential.round(decimals=2)
+    
     # FOR LOADING THE FILE INTO "book"
     book = load_workbook(
         '/Users/michaeloconnor/Desktop/credit_card_data_set.xlsx')
@@ -368,10 +385,6 @@ def rowPicker():
     # CLOSING THE PANDAS "XLSX WRITER" AND OUTPUTTING THE EXCEL FILE
     writer.save()    
     
-    # FILTERING THE DATAFRAME BASED ON THE 'PERIOD' OF THE INPUTTED DATE
-    filterMask = (dfRow['PERIOD'] == periodMask)
-    dfRow = dfRow[filterMask]
-    
     # ONLY INSERTS THE NEWLY UPDATED DATAFRAME VALUES INTO THE TKK.TREEVIEW WIDGET
     print("\n\n", "dfRow:__ ", "\n\n", dfRow)
     for index, row in dfRow.iterrows():
@@ -379,6 +392,11 @@ def rowPicker():
         
     # INSERTING THE 'Total Interst' INTO THE BOTTOM OF THE TTK.TREEVIEW WIDGET TABLE.
     tv.insert('', 'end', values=["", "", "", "TOTAL INTEREST:", interestSum2])
+    
+    # INSERTS THE 'Change in Interest' VALUE INTO THE TTK.TREEVIEW WIDGET
+    tv.insert('', 'end', values=["", "", "",
+                                 "CHANGE IN INTEREST:", interestDifferential])
+    
 # ________________________________________________________________________________________________________________        
 
 # THE SELECTED OPTION, FROM THE DROPDOWN-MENU, GETS SET AS A STRING VARIABLE.
