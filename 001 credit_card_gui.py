@@ -15,6 +15,7 @@ df['DATE'] = pd.to_datetime(df['DATE']).apply(lambda x: x.date())
 df['DEBIT'] = df['DEBIT'].round(decimals=2)
 df['CREDIT'] = df['CREDIT'].round(decimals=2)
 df['BALANCE'] = (df['DEBIT'].cumsum() + df['CREDIT'].cumsum()).round(decimals=2)
+df['DAILY INTEREST] = (21.87/365)
 df['INTEREST'] = round(df['BALANCE'] * df['DAILY INTEREST'] * (1/100), 2)
 
 # STORING THE 'Total Interest' INTO A VARIABLE
