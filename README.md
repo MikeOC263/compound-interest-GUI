@@ -9,7 +9,7 @@ The purpose of this program was to demonstrate to myself how different transacti
 - _sheetPicker_, allows you to interchange which accounting period is shown in the GUI.
 
 <p>
-    <img src="https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/001%20sheetPicker.png"  />
+    <img src="https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/001%20sheetPicker.png" width="220" height="240"  />
 </p>
 
 ![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/001%20sheetPicker.png)
