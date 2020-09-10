@@ -8,6 +8,10 @@ The purpose of this program was to demonstrate to myself how different transacti
 ## GUI Functions
 - _sheetPicker_, allows you to interchange which accounting period is shown in the GUI.
 
+<p>
+    <img src="https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/001%20sheetPicker.png"  />
+</p>
+
 ![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/001%20sheetPicker.png)
 
 
