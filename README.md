@@ -20,25 +20,25 @@ The purpose of this program was to demonstrate to myself how different transacti
 ## Requirements
 - This GUI extracts from a database which consists of a _.xlsx_ file, which should have it's _file_ _path_ & _file_ _name_ adjusted accordingly.
 
-![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/007%20Database%20File%20Path.png)
+![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/003%20Database%20File%20Path.png)
 
 - This file should have three columns labelled; _DATE_, _DEBIT_ & _CREDIT_ - in order to extract the data correctly.
 
-![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/003%20.xlsx%20database.png)
+![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/004%20.xlsx%20database.png)
 
 
 ## Assumptions
 - This is based of an _annual_ _interest_ _rate_ of 21.87 %.
 
-![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/004%20Annual%20Interest%20.png)
+![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/005%20Annual%20Interest%20.png)
 
 - The _daily_ _balance_ and _daily_ _interest_ is calculated based on it's _accounting period_.
 
-![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/005%20Period%20Mask.png)
+![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/006%20Period%20Mask.png)
 
 - The _accounting_ _period_ within this program is based on the 8th - 7th of every month (unless those end dates fall on a weekend, rather than a weekday).
 
-![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/006%20Period%20Start%20Date.png)
+![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshotPics/007%20Period%20Start%20Date.png)
 
 
 
