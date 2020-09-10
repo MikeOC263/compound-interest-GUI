@@ -9,7 +9,7 @@ The purpose of this program was to demonstrate to myself how different transacti
 - _sheetPicker_, allows you to interchange which accounting period is shown in the GUI.
 
 ![001 sheetPicker](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/001%20sheetPicker.png)
-
+![001 sheetPicker2](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/001%20sheetPicker2.jpg)
 
 
 - _rowPicker_, allows you to include new transactions to the database.
