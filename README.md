@@ -14,7 +14,7 @@ The purpose of this program was to demonstrate to myself how different transacti
 
 - _rowPicker_, allows you to include new transactions to the database.
 
-![](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/002%20rowPicker.png)
+![rowPicker](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/002%20rowPicker.png)
 
 
 ## Requirements
