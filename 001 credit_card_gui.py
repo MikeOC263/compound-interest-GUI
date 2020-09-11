@@ -45,8 +45,7 @@ for date in start_dates:
         new_start_date = date + timedelta(days=2)
         start_dates.remove(date)
         start_dates.append(new_start_date)
-        # print("date.weekday() == 5", date)
-        # print("new_start_date", new_start_date)
+
 
 # WHEN 8th OCCURS ON A "SUNDAY" (== 6)
 for date in start_dates:
@@ -54,8 +53,7 @@ for date in start_dates:
         new_start_date = date + timedelta(days=1)
         start_dates.remove(date)
         start_dates.append(new_start_date)
-        # print("date.weekday() == 6", date)
-        # print("new_start_date", new_start_date)
+
 
 # SORTING IN ORDER THE NEWLY ADJUSTED DAYS 
 # (.....HERE, THE start_dates DON'T NECESSARILT OCCUR ON THE 8TH) 
