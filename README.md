@@ -37,6 +37,8 @@ The purpose of this program was to demonstrate to myself how different transacti
 
 - The _accounting_ _period_ within this program is based on the 8th - 7th of every month (unless those end dates fall on a weekend, rather than a weekday).
 
+https://github.com/MikeOC263/compound-interest-GUI/blob/50cf879e18a01244d57be1b0df6f190ed94c0826/001%20credit_card_gui.py#L42-L56
+
 ![007 Period Start Date](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/007%20Period%20Start%20Date.png)
 
 
