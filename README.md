@@ -37,7 +37,6 @@ The purpose of this program was to demonstrate to myself how different transacti
 
 - The _accounting_ _period_ within this program is based on the 8th - 7th of every month (unless those end dates fall on a weekend, rather than a weekday).
 
-
 ![007 Period Start Date](https://github.com/MikeOC263/compound-interest-GUI/blob/master/screenshots/007%20Period%20Start%20Date.png)
 
 
